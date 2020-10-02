@@ -1,9 +1,14 @@
+#cal_problem ok
+
+
 import re
 from fractions import Fraction
 
 
 def cal_problem(input_pro):
  '''
+ 输入：表达式字符串
+ 输出：计算后字符串
  1.乘号除号替换
  2.真分数包含‘的要替换为加号
  3.分数要用小括号括起来
