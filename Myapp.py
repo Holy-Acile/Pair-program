@@ -1,4 +1,4 @@
-#answer okk
+#all okk
 
 import re
 from fractions import Fraction
