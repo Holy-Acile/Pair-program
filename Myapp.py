@@ -1,4 +1,4 @@
-#all okk
+#all ok！
 
 import re
 from fractions import Fraction
