@@ -1,5 +1,3 @@
-#answer okk
-
 import re
 from fractions import Fraction
 import sys
@@ -13,14 +11,20 @@ def cal_problem_list(problem_list):
 
  return answer_list
 
- # 计算单个题目
 def cal_problem(input_pro):
- t1 = "'"  # 先处理假分数
+ '''
+ 1.真分数包含‘的要替换为加号
+ 2.分数要用小括号括起来
+ 3.乘号除号替换
+ '''
+
+ t1 = "'" #先处理假分数
  if (t1 in input_pro):
   input_pro = re.sub(r"(\d+'\d+/\d+)", r'(\1)', input_pro)
   input_pro = input_pro.replace("'", '+')
 
- input_pro = re.sub(r'(\d+/\d+)', r'(\1)', input_pro)  # 将再将分数优先处理
+ input_pro = re.sub(r'(\d+/\d+)', r'(\1)', input_pro)  #将再将分数优先处理
+
 
  t2 = "÷"
  if (t2 in input_pro):
@@ -30,8 +34,9 @@ def cal_problem(input_pro):
  if (t3 in input_pro):
   input_pro = input_pro.replace("×", '*')
 
- transformed_pro = re.sub(r'(\d+)', r'Fraction("\1")', input_pro)  # 小数转分数
 
+ transformed_pro = re.sub(r'(\d+)', r'Fraction("\1")', input_pro)  # 小数转分数
+ print(transformed_pro)
 
  res_int = int(eval(input_pro))
  res_fra = eval(transformed_pro) - res_int
@@ -40,16 +45,28 @@ def cal_problem(input_pro):
  else:
   res = str(eval(transformed_pro))  # 返回整数字符化
 
- return res  # 返回一个字符串形式的参数可能为整数，可能为真分数
+ return res #返回一个字符串形式的参数可能为整数，可能为真分数
 
- # 主动抛出异常
+
+
+
 def raise_ex(s1,s2):
  if(s1=='-n' and s2=='-r'):
   return True
- ex = Exception('Error:参数格式错误！')
+ # print('主动抛出异常')
+ ex = Exception('参数格式错误！')
  raise ex
 
 def main():
+ '''
+ 输入：
+ - -n num：生成题目的数量num，若无此给出此参数，默认为10
+ - -r num：生成题目的数的范围在[0, num)，必须给定。若未给定则报错
+ 输出：
+ - - 作业习题文档
+ - -e <exercisefile>.txt -a <answerfile>.txt：在当前目录中习题集和答案集的txt文档
+ - -统计结果输出到文件Grade.txt
+ '''
  try:
   s1, n, s2, r = sys.argv[1:5]
  except BaseException:
@@ -61,19 +78,16 @@ def main():
    print(re)
   else:
    try:
-    int(n)
-    int(r)
+    float(n)
+    float(r)
    except ValueError:
-    print("Error:num处输入的不是整数！")
+    print("num处输入的不是数字！")
    else:
 
     Exer=open('Exercises' + '.txt', "w")##创建两个txt文件
     Answ=open('Answers' + '.txt', "w")
 
-    n=int(n)
-    r=int(r)
     problem = gen_problem_list(n, r)
-    print(problem)
     answer=cal_problem_list(problem)
 
     for i in range(len(problem)):
@@ -92,3 +106,13 @@ def main():
 
 if __name__ == '__main__':
  main()
+
+### 作用
+
+#计算一个题目
+
+### 接收参数
+
+#- problem：题目，类型为list，格式为gen_problem的返回参数
+
+### 返回参数

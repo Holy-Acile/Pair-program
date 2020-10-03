@@ -115,6 +115,6 @@ def gen_problem_list(cnt, mod):
     
     return problem_list
 
-if __name__ == "__main__" :
-    problem_list = gen_problem_list(5, 5)
-    print(problem_list)
+# if __name__ == "__main__" :
+#     problem_list = gen_problem_list(5, 5)
+#     print(problem_list)
