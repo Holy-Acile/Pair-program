@@ -83,7 +83,7 @@ def main():
     Exer.close()
 
     for j in range(len(answer)):
-     s = str(answer[j])# 去除[],这两行按数据不同，可以选择
+     s = str(answer[j])
      s =str(j+1)+'.  '+s+ '\n'
      Answ.write(s)
     Answ.close()
