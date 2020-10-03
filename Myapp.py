@@ -10,7 +10,6 @@ def cal_problem_list(problem_list):
  for problem in problem_list:
   cal_re=cal_problem(problem)
   answer_list.append(cal_re)
-
  return answer_list
 
  # 计算单个题目
@@ -19,19 +18,15 @@ def cal_problem(input_pro):
  if (t1 in input_pro):
   input_pro = re.sub(r"(\d+'\d+/\d+)", r'(\1)', input_pro)
   input_pro = input_pro.replace("'", '+')
-
  input_pro = re.sub(r'(\d+/\d+)', r'(\1)', input_pro)  # 将再将分数优先处理
 
  t2 = "÷"
  if (t2 in input_pro):
   input_pro = input_pro.replace("÷", '/')
-
  t3 = "×"
  if (t3 in input_pro):
   input_pro = input_pro.replace("×", '*')
-
  transformed_pro = re.sub(r'(\d+)', r'Fraction("\1")', input_pro)  # 小数转分数
-
 
  res_int = int(eval(input_pro))
  res_fra = eval(transformed_pro) - res_int
@@ -39,8 +34,9 @@ def cal_problem(input_pro):
   res = str(res_int) + "'" + str(res_fra)  # 返回分数
  else:
   res = str(eval(transformed_pro))  # 返回整数字符化
-
  return res  # 返回一个字符串形式的参数可能为整数，可能为真分数
+
+
 
  # 主动抛出异常
 def raise_ex(s1,s2):
@@ -48,6 +44,8 @@ def raise_ex(s1,s2):
   return True
  ex = Exception('Error:参数格式错误！')
  raise ex
+
+
 
 def main():
  try:
@@ -66,16 +64,13 @@ def main():
    except ValueError:
     print("Error:num处输入的不是整数！")
    else:
-
     Exer=open('Exercises' + '.txt', "w")##创建两个txt文件
     Answ=open('Answers' + '.txt', "w")
-
     n=int(n)
     r=int(r)
     problem = gen_problem_list(n, r)
     print(problem)
     answer=cal_problem_list(problem)
-
     for i in range(len(problem)):
      p = str(problem[i])
      p = str(i + 1) + '.  ' + p+' ='+ '\n'
