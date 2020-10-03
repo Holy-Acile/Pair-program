@@ -6,9 +6,9 @@ def gen_num(mod):
     if mod <= 0 : return Fraction(0, 1)
     bit = random.randint(1, 10)
 
-    if bit >= 1 and bit <= 7:                    #自然数
+    if bit >= 1 and bit <= 5:                    #自然数
         return Fraction(random.randint(0, mod-1), 1)
-    elif bit == 8 or bit == 9 or mod == 1 :      #普通真分数
+    elif (bit >= 6 and bit <= 8) or mod == 1 :   #普通真分数
         down = random.randint(2, mod+5)
         up = random.randint(1, down-1)
         return Fraction(up, down)
@@ -21,7 +21,7 @@ def gen_num(mod):
 #生成题目
 def gen_problem(mod):
     problem = []
-    const_op = ("+", "−", "×", "÷")
+    const_op = ("+", "-", "×", "÷")
 
     #生成运算符
     cnt_op = random.randint(1, 3)
@@ -43,7 +43,7 @@ def gen_problem(mod):
         t = 0
         if op == "+" :
             t = num + part_num
-        elif op == "−" :
+        elif op == "-" :
             if swap_flag == 0 :
                 t = num - part_num
                 while t < 0 :
@@ -71,7 +71,7 @@ def gen_problem(mod):
         #加括号
         bracket_flag = False
         if op == "×" or op == "÷" :
-            if last_op == "+" or last_op == "−" :
+            if last_op == "+" or last_op == "-" :
                 bracket_flag = True
 
         if bracket_flag :
@@ -92,12 +92,84 @@ def gen_problem(mod):
 
 def gen_problem_list(cnt, mod):
     problem_list = []
-    const_op = ("+", "−", "×", "÷", "(", ")")
+    vis = {}
+    const_op = ("+", "-", "×", "÷")
     while cnt :
-        problem = gen_problem(mod)
+        problem = []
+        while True :
+            problem = gen_problem(int(mod))
+            if str(problem) in vis : continue
+
+            op = []
+            cnt_op = 0
+            for it in problem :
+                if it in const_op :
+                    cnt_op += 1
+                    op.append(it)
+
+            if cnt_op == 1 :
+                if op[0] == "-" or op[0] == "÷" : break
+                tmp = problem
+                tmp[0], tmp[2] = tmp[2], tmp[0]
+
+                if str(tmp) in vis : 
+                    continue
+                else : 
+                    vis[str(tmp)] = True
+                    break
+
+            elif cnt_op == 2 :
+                if op[0] == "-" or op[0] == "÷" :
+                    if op[1] == "-" or op[1] == "÷" :
+                        break
+                
+                pos = -1
+                for i in range(len(problem)) :
+                    if problem[i] == "(" : pos = i
+                
+                #交换
+                if problem[pos+2] == "+" or problem[pos+2] == "×" :
+                    if problem[pos+1] > problem[pos+3] :
+                        problem[pos+1], problem[pos+3] = problem[pos+3], problem[pos+1]
+                
+                tmp = ["("] + [problem[pos+1]] + [problem[pos+2]] + [problem[pos+3]] + [")"]
+
+                #得到另一个运算符和运算数
+                sc_op = ""
+                sc_num = 0
+
+                for i in range(0, min(0, pos)) :
+                    if sc_op != "" and sc_num != 0 : break
+                    if problem[i] in const_op : sc_op = problem[i]
+                    else : sc_num = problem[i]
+                
+                for i in range(len(problem)) :
+                    if problem[i] == ")" : pos = i
+                
+                if pos == -1 : pos = 2
+                
+                for i in range(pos+1, len(problem)) :
+                    if sc_op != "" and sc_num != 0 : break
+                    if problem[i] in const_op : sc_op = problem[i]
+                    else : sc_num = problem[i]
+                
+                #合并到tmp
+                tmp = tmp + [sc_op] + [sc_num]
+
+                if str(tmp) in vis : 
+                    continue
+                else :
+                    vis[str(tmp)] = True
+                    break
+
+            else : 
+                break
+        
+        vis[str(problem)] = True
+
         s = ""
         for it in problem :
-            if it in const_op :  #符号
+            if it in (const_op + ("(", ")") ) :  #符号
                 if it == "(" or it == ")" : s += it
                 else : s += " " + it + " "
             else :               #数字
@@ -116,5 +188,12 @@ def gen_problem_list(cnt, mod):
     return problem_list
 
 if __name__ == "__main__" :
-    problem_list = gen_problem_list(5, 5)
-    print(problem_list)
+    problem_list = gen_problem_list(10000, 10)
+    vis = {}
+    for problem in problem_list :
+        if str(problem) in vis :
+            print("Error!!!")
+        else :
+            vis[str(problem)] = True
+    
+    print("Finish test!!!")
