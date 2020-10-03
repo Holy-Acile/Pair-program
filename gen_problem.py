@@ -47,7 +47,7 @@ def gen_problem(mod):
             if swap_flag == 0 :
                 t = num - part_num
                 while t < 0 :
-                    part_num = gen_num(int(t))
+                    part_num = gen_num(min(mod, int(t)))
                     t = num - part_num
             else :
                 t = part_num - num
@@ -90,80 +90,85 @@ def gen_problem(mod):
 
     return problem
 
+def check_problem(problem, vis) :
+    if str(problem) in vis : return False
+    const_op = ("+", "-", "×", "÷")
+
+    op = []
+    cnt_op = 0
+    for it in problem :
+        if it in const_op :
+            cnt_op += 1
+            op.append(it)
+
+    if cnt_op == 1 :
+        if op[0] == "-" or op[0] == "÷" : return True
+        tmp = problem
+        tmp[0], tmp[2] = tmp[2], tmp[0]
+
+        if str(tmp) in vis : 
+            return False
+        else : 
+            vis[str(tmp)] = True
+            return True
+
+    elif cnt_op == 2 :
+        if op[0] == "-" or op[0] == "÷" :
+            if op[1] == "-" or op[1] == "÷" :
+                return True
+        
+        pos = -1
+        for i in range(len(problem)) :
+            if problem[i] == "(" : pos = i
+        
+        #交换
+        if problem[pos+2] == "+" or problem[pos+2] == "×" :
+            if problem[pos+1] > problem[pos+3] :
+                problem[pos+1], problem[pos+3] = problem[pos+3], problem[pos+1]
+        
+        tmp = ["("] + [problem[pos+1]] + [problem[pos+2]] + [problem[pos+3]] + [")"]
+
+        #得到另一个运算符和运算数
+        sc_op = ""
+        sc_num = 0
+
+        for i in range(0, min(0, pos)) :
+            if sc_op != "" and sc_num != 0 : return True
+            if problem[i] in const_op : sc_op = problem[i]
+            else : sc_num = problem[i]
+        
+        for i in range(len(problem)) :
+            if problem[i] == ")" : pos = i
+        
+        if pos == -1 : pos = 2
+        
+        for i in range(pos+1, len(problem)) :
+            if sc_op != "" and sc_num != 0 : return True
+            if problem[i] in const_op : sc_op = problem[i]
+            else : sc_num = problem[i]
+        
+        #合并到tmp
+        tmp = tmp + [sc_op] + [sc_num]
+
+        if str(tmp) in vis : 
+            return False
+        else :
+            vis[str(tmp)] = True
+            return True
+
+    else : 
+        return True
+
 def gen_problem_list(cnt, mod):
     problem_list = []
     vis = {}
     const_op = ("+", "-", "×", "÷")
+
     while cnt :
         problem = []
         while True :
             problem = gen_problem(int(mod))
-            if str(problem) in vis : continue
-
-            op = []
-            cnt_op = 0
-            for it in problem :
-                if it in const_op :
-                    cnt_op += 1
-                    op.append(it)
-
-            if cnt_op == 1 :
-                if op[0] == "-" or op[0] == "÷" : break
-                tmp = problem
-                tmp[0], tmp[2] = tmp[2], tmp[0]
-
-                if str(tmp) in vis : 
-                    continue
-                else : 
-                    vis[str(tmp)] = True
-                    break
-
-            elif cnt_op == 2 :
-                if op[0] == "-" or op[0] == "÷" :
-                    if op[1] == "-" or op[1] == "÷" :
-                        break
-                
-                pos = -1
-                for i in range(len(problem)) :
-                    if problem[i] == "(" : pos = i
-                
-                #交换
-                if problem[pos+2] == "+" or problem[pos+2] == "×" :
-                    if problem[pos+1] > problem[pos+3] :
-                        problem[pos+1], problem[pos+3] = problem[pos+3], problem[pos+1]
-                
-                tmp = ["("] + [problem[pos+1]] + [problem[pos+2]] + [problem[pos+3]] + [")"]
-
-                #得到另一个运算符和运算数
-                sc_op = ""
-                sc_num = 0
-
-                for i in range(0, min(0, pos)) :
-                    if sc_op != "" and sc_num != 0 : break
-                    if problem[i] in const_op : sc_op = problem[i]
-                    else : sc_num = problem[i]
-                
-                for i in range(len(problem)) :
-                    if problem[i] == ")" : pos = i
-                
-                if pos == -1 : pos = 2
-                
-                for i in range(pos+1, len(problem)) :
-                    if sc_op != "" and sc_num != 0 : break
-                    if problem[i] in const_op : sc_op = problem[i]
-                    else : sc_num = problem[i]
-                
-                #合并到tmp
-                tmp = tmp + [sc_op] + [sc_num]
-
-                if str(tmp) in vis : 
-                    continue
-                else :
-                    vis[str(tmp)] = True
-                    break
-
-            else : 
-                break
+            if check_problem(problem, vis) : break
         
         vis[str(problem)] = True
 
