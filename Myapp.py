@@ -64,8 +64,8 @@ def main():
    except ValueError:
     print("Error:num处输入的不是整数！")
    else:
-    Exer=open('Exercises' + '.txt', "w")##创建两个txt文件
-    Answ=open('Answers' + '.txt', "w")
+    Exer=open('Exercises' + '.txt', "w", encoding='utf-8')##创建两个txt文件
+    Answ=open('Answers' + '.txt', "w", encoding='utf-8')
     n=int(n)
     r=int(r)
     problem = gen_problem_list(n, r)
@@ -73,13 +73,13 @@ def main():
     answer=cal_problem_list(problem)
     for i in range(len(problem)):
      p = str(problem[i])
-     p = str(i + 1) + '.  ' + p+' ='+ '\n'
+     p = str(i + 1) + '. ' + p+' = '+ '\n'
      Exer.write(p)
     Exer.close()
 
     for j in range(len(answer)):
      s = str(answer[j])
-     s =str(j+1)+'.  '+s+ '\n'
+     s =str(j+1)+'. '+s+ '\n'
      Answ.write(s)
     Answ.close()
     print(answer)
