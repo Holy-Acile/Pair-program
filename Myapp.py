@@ -20,16 +20,6 @@ def raise_ex(s1, s2):
 
 
 def making_problem(n,r):
-    # try:
-    #     s1, n, s2, r = sys.argv[1:5]
-    # except BaseException:
-    #     print("Error: 输入命令错误 \n正确格式为-n num -r num \n")
-    # else:
-    #     try:
-    #         print(raise_ex(s1, s2))
-    #     except Exception as re:
-    #         print(re)
-    #     else:
             try:
                 int(n)
                 int(r)
@@ -77,11 +67,9 @@ def main():
                 load_e = load(e)
                 load_a = load(a)
                 check(load_e, load_a)
-            else:
-                print('Error:选择错误')
+            # else:
+            #     print('Error:选择错误')
 
 
-
-    # print(str)
 if __name__ == '__main__':
     main()
