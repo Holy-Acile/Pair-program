@@ -1,7 +1,7 @@
-import os
 import re
 from module.cal_problem_list import cal_problem_list
 
+#加载题目答案文件
 def load(path):
  try:
   load_txt = [w.strip() for w in open(path, 'r', encoding='UTF-8').readlines()]
@@ -16,7 +16,7 @@ def load(path):
    change.append(input_pro)
   return change
 
-
+#对比检查文件
 def check(problem,answer):
  standard_ans=cal_problem_list(problem)
  #默认输入答案对仗
