@@ -44,7 +44,8 @@ def gen_problem(mod):
         if op == "+" :
             t = num + part_num
         elif op == "-" :
-            if swap_flag == 0 :
+            if swap_flag == 0 or num >= mod:
+                swap_flag = 0
                 t = num - part_num
                 while t < 0 :
                     part_num = gen_num(min(mod, int(t)))
