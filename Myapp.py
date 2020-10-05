@@ -63,8 +63,8 @@ def main():
             if (res == 1):
                 making_problem(n, r)
             elif (res == 2):
-                e = os.getcwd() + '\\' + n
-                a = os.getcwd() + '\\' + r
+                e = n
+                a = r
                 load_e = load(e)
                 load_a = load(a)
                 check(load_e, load_a)
