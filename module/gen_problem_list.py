@@ -35,17 +35,3 @@ def gen_problem_list(cnt, mod):
         cnt -= 1
 
     return problem_list
-
-
-if __name__ == "__main__":
-    problem_list = gen_problem_list(5, 10)
-    print(problem_list)
-
-    vis = {}
-    for problem in problem_list:
-        if str(problem) in vis:
-            print("Error!!!")
-        else:
-            vis[str(problem)] = True
-
-    print("Finish test!!!")
