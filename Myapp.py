@@ -9,9 +9,8 @@ from module.cal_problem_list import cal_problem_list
 from module.gen_problem_list import gen_problem_list
 from module.check_txt import load, check
 
+
 # 主动抛出异常
-
-
 def raise_ex(s1, s2):
     if (s1 == '-n' and s2 == '-r'):
         return 1
@@ -29,8 +28,7 @@ def making_problem(n, r):
     except ValueError:
         print("Error:num处输入的不是整数！")
     else:
-        Exer = open('Exercises' + '.txt', "w",
-                    encoding='utf-8')  # 创建两个txt文件
+        Exer = open('Exercises' + '.txt', "w", encoding='utf-8')  ##创建两个txt文件
         Answ = open('Answers' + '.txt', "w", encoding='utf-8')
         n = int(n)
         r = int(r)
