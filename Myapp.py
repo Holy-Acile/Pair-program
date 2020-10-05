@@ -1,7 +1,7 @@
 # all ok!!！
 import os
 import re
-from fractions import Fraction
+
 import sys
 import time
 
