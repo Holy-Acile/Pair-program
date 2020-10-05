@@ -2,8 +2,6 @@ import sys
 sys.path.append("../../../")
 from module.check_problem import check_problem
 
-<<<<<<< HEAD
-=======
 if __name__ == "__main__":
     test = [
         [   [5, "+", 4], [4, "+", 5], ["same"] ],
@@ -45,4 +43,3 @@ if __name__ == "__main__":
     
     if flag :
         print("Finish test!!!")
->>>>>>> 1e8e2168e2714060848fee3f0116c94a18be50fd
