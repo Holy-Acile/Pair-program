@@ -1,8 +1,9 @@
-#all ok!!！
+# all ok!!！
 import os
 import re
 from fractions import Fraction
 import sys
+import time
 
 from module.cal_problem_list import cal_problem_list
 from module.gen_problem_list import gen_problem_list
@@ -50,6 +51,7 @@ def making_problem(n, r):
 
 
 def main():
+    start_time = time.time()
     try:
         s1, n, s2, r = sys.argv[1:5]
     except BaseException:
@@ -68,8 +70,9 @@ def main():
                 load_e = load(e)
                 load_a = load(a)
                 check(load_e, load_a)
-            # else:
-            #     print('Error:选择错误')
+            end_time = time.time()
+            time_required = end_time - start_time
+            print('程序所耗时间：%f s' % (time_required))
 
 
 if __name__ == '__main__':
