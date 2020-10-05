@@ -33,7 +33,8 @@ def making_problem(n, r):
         n = int(n)
         r = int(r)
         problem = gen_problem_list(n, r)
-        print(problem)
+        if n <= 100 : 
+            print(problem)
         answer = cal_problem_list(problem)
 
         for i in range(len(problem)):
@@ -47,7 +48,8 @@ def making_problem(n, r):
             s = str(j + 1) + '. ' + s + '\n'
             Answ.write(s)
         Answ.close()
-        print(answer)
+        if n <= 100 :
+            print(answer)
 
 
 def main():
