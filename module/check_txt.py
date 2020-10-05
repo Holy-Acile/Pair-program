@@ -29,9 +29,9 @@ def check(problem, answer):
             wrong.append(str(i + 1))
         else:
             right.append(str(i + 1))
-    correct_txt = 'Correct:' + str(len(right)) + '(' + ", ".join(
+    correct_txt = 'Correct: ' + str(len(right)) + ' (' + ", ".join(
         str(i) for i in right) + ')'
-    wrong_txt = 'Wrong:' + str(len(wrong)) + '(' + ", ".join(
+    wrong_txt = 'Wrong: ' + str(len(wrong)) + ' (' + ", ".join(
         str(i) for i in wrong) + ')'
     Grade = open('Grade' + '.txt', "w", encoding='utf-8')
     Grade.write(correct_txt)
