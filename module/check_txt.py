@@ -36,5 +36,6 @@ def check(problem, answer):
     Grade = open('Grade' + '.txt', "w", encoding='utf-8')
     Grade.write(correct_txt)
     Grade.write(wrong_txt)
-
-    return print(correct_txt + '\n' + wrong_txt)
+    str_ans=correct_txt + '\n' + wrong_txt
+    # return print(str_ans)
+    return str_ans
