@@ -12,7 +12,9 @@ def check_problem(problem, vis):
 
     #1个运算符
     if cnt_op == 1:
-        if op[0] == "-" or op[0] == "÷": return True
+        if op[0] == "-" or op[0] == "÷": 
+            vis[str(problem)] = True
+            return True
         tmp = problem
         tmp[0], tmp[2] = tmp[2], tmp[0]
 
@@ -20,11 +22,13 @@ def check_problem(problem, vis):
             return False
         else:
             vis[str(tmp)] = True
+            vis[str(problem)] = True
             return True
     #2个运算符
     elif cnt_op == 2:
         if op[0] == "-" or op[0] == "÷":
             if op[1] == "-" or op[1] == "÷":
+                vis[str(problem)] = True
                 return True
 
         pos = -1
@@ -46,8 +50,8 @@ def check_problem(problem, vis):
         sc_op = ""
         sc_num = 0
 
-        for i in range(0, min(0, pos)):
-            if sc_op != "" and sc_num != 0: return True
+        for i in range(0, max(0, pos)):
+            if sc_op != "" and sc_num != 0: break
             if problem[i] in const_op: sc_op = problem[i]
             else: sc_num = problem[i]
 
@@ -57,7 +61,7 @@ def check_problem(problem, vis):
         if pos == -1: pos = 2
 
         for i in range(pos + 1, len(problem)):
-            if sc_op != "" and sc_num != 0: return True
+            if sc_op != "" and sc_num != 0: break
             if problem[i] in const_op: sc_op = problem[i]
             else: sc_num = problem[i]
 
@@ -68,7 +72,9 @@ def check_problem(problem, vis):
             return False
         else:
             vis[str(tmp)] = True
+            vis[str(problem)] = True
             return True
     #3个运算符
     else:
+        vis[str(problem)] = True
         return True
