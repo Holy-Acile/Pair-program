@@ -46,7 +46,7 @@ def gen_problem(mod):
                     while t < 0:
                         part_num = gen_num(int(mod - num)) + num
                         t = part_num - num
-                    if part_num.denominator > mod + 5 :
+                    if mod > 5 and part_num.denominator > mod:
                         ok = False
                         break
             #乘
