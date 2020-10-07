@@ -29,7 +29,7 @@ performance #性能分析
     |-- *.txt           #line_profiler性能分析
     |-- *.png           #实际运行时间
 |-- after           #改进后
-|-- test.py         #测试代码
+|-- test.py         #性能分析测试代码
 
 Myapp.py            #主程序
 Exercises.txt       #生成的题目
@@ -276,6 +276,260 @@ if __name__ == "__main__":
 
 ## 效能分析
 
+### making_problem
 
+首先用line_profiler对主程序Myapp.py中的`making_problem`进行分析，结果如下：
+
+```txt
+Total time: 10.3257 s
+File: Myapp.py
+Function: making_problem at line 23
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    23                                           @profile
+    24                                           def making_problem(n, r):
+    25         1         35.0     35.0      0.0      try:
+    26         1         66.0     66.0      0.0          int(n)
+    27         1         17.0     17.0      0.0          int(r)
+    28                                               except ValueError:
+    29                                                   print("Error:num处输入的不是整数！")
+    30                                               else:
+    31         1      11014.0  11014.0      0.0          Exer = open('Exercises' + '.txt', "w", encoding='utf-8')
+    32         1       5698.0   5698.0      0.0          Answ = open('Answers' + '.txt', "w", encoding='utf-8')
+    33         1         62.0     62.0      0.0          n = int(n)
+    34         1         18.0     18.0      0.0          r = int(r)
+    35         1   58228549.0 58228549.0     56.4          problem = gen_problem_list(n, r)
+    36         1         49.0     49.0      0.0          if n <= 100 :
+    37                                                       print(problem)
+    38         1   43752998.0 43752998.0     42.4          answer = cal_problem_list(problem)
+    39
+    40     10001      99036.0      9.9      0.1          for i in range(len(problem)):
+    41     10000     140247.0     14.0      0.1              p = str(problem[i])
+    42     10000     210919.0     21.1      0.2              p = str(i + 1) + '. ' + p + ' = ' + '\n'
+    43     10000     235853.0     23.6      0.2              Exer.write(p)
+    44         1       3185.0   3185.0      0.0          Exer.close()
+    45
+    46     10001      89246.0      8.9      0.1          for j in range(len(answer)):
+    47     10000     124284.0     12.4      0.1              s = str(answer[j])
+    48     10000     169014.0     16.9      0.2              s = str(j + 1) + '. ' + s + '\n'
+    49     10000     184081.0     18.4      0.2              Answ.write(s)
+    50         1       3063.0   3063.0      0.0          Answ.close()
+    51         1         28.0     28.0      0.0          if n <= 100 :
+    52                                                       print(answer)
+
+```
+
+从时间占比可以知道：生成题目集`gen_problem_list`和计算题目集`cal_problem_list`这两个模块花费时间最多。
+
+### gen_problem_list
+
+接着对`gen_problem_list`进行分析：
+
+```txt
+Total time: 6.46569 s
+File: test.py
+Function: gen_problem_list at line 196
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   196                                           @profile
+   197                                           #生成题目集
+   198                                           def gen_problem_list(cnt, mod):     
+   199         1         33.0     33.0      0.0      problem_list = []
+   200         1         17.0     17.0      0.0      vis = {}  #记录已经存在的problem
+   201         1         11.0     11.0      0.0      const_op = ("+", "-", "×", "÷") 
+   202
+   203     10001     103516.0     10.4      0.2      while cnt:
+   204     10000     133573.0     13.4      0.2          problem = []
+   205                                                   while True:
+   206     11224   27579328.0   2457.2     42.7              problem = gen_problem(int(mod))
+   207     11224   14091956.0   1255.5     21.8              if check_problem(problem, vis): break
+   208
+   209     10000     971476.0     97.1      1.5          vis[str(problem)] = True
+   210
+   211     10000     114855.0     11.5      0.2          s = ""
+   212     75512     817420.0     10.8      1.3          for it in problem:
+   213     65512   11170373.0    170.5     17.3              if it in (const_op + ("(", ")")):  #符号
+   214     34362     481553.0     14.0      0.7                  if it == "(" or it == ")": s += it
+   215     21150     353209.0     16.7      0.5                  else: s += " " + it + " "
+   216                                                       else:  #数字
+   217     31150     913037.0     29.3      1.4                  pre = int(it)
+   218     31150    5456656.0    175.2      8.4                  frac = it - pre
+   219     31150    1024095.0     32.9      1.6                  if frac == 0:
+   220     15354     289012.0     18.8      0.4                      s += str(pre)
+   221     15796     192367.0     12.2      0.3                  elif pre == 0:
+   222      8925     363270.0     40.7      0.6                      s += str(frac)
+   223                                                           else:
+   224      6871     321299.0     46.8      0.5                      s += str(pre) + "'" + str(frac)
+   225
+   226     10000     145811.0     14.6      0.2          problem_list.append(s)
+   227     10000     134001.0     13.4      0.2          cnt -= 1
+   228
+   229         1          9.0      9.0      0.0      return problem_list
+
+```
+
+刚开始一看似乎并没有什么问题：生成题目`gen_problem`和检查题目`check_problem`这两个用的时间最多。但是，细看发现：有一个地方：Line #213，判断竟然用了$17.3\%$的时间。
+
+思考片刻后，发现耗时的原因是：每次判断都要从元组中查找这个`it`，就很耗时间。而我这里只是为了判断`it`是否为符号。因为代码生成的`problem`只有数(分数类)和符号，所以考虑用`type()`函数来解决这个判断问题。修改之后的性能分析：
+
+```txt
+Total time: 4.79658 s
+File: test.py
+Function: gen_problem_list at line 200
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   200                                           @profile
+   201                                           #生成题目集
+   202                                           def gen_problem_list(cnt, mod):
+   203         1         30.0     30.0      0.0      problem_list = []
+   204         1         16.0     16.0      0.0      vis = {}  #记录已经存在的problem
+   205         1         12.0     12.0      0.0      const_op = ("+", "-", "×", "÷")
+   206
+   207     10001     101018.0     10.1      0.2      while cnt:
+   208     10000     128066.0     12.8      0.3          problem = []
+   209                                                   while True:
+   210     11404   27219434.0   2386.8     56.7              problem = gen_problem(int(mod))
+   211     11404    7822336.0    685.9     16.3              if check_problem(problem, vis): break
+   212
+   213     10000    1030576.0    103.1      2.1          vis[str(problem)] = True
+   214
+   215     10000     114895.0     11.5      0.2          s = ""
+   216     75344     802463.0     10.7      1.7          for it in problem:
+   217     65344    1002839.0     15.3      2.1              if type(it) != type(const_frac):  #符号
+   218     34244     481529.0     14.1      1.0                  if it == "(" or it == ")": s += it
+   219     21100     345427.0     16.4      0.7                  else: s += " " + it + " "
+   220                                                       else:  #数字
+   221     31100     894772.0     28.8      1.9                  pre = int(it)
+   222     31100    5591981.0    179.8     11.7                  frac = it - pre
+   223     31100    1061854.0     34.1      2.2                  if frac == 0:
+   224     15997     293074.0     18.3      0.6                      s += str(pre)
+   225     15103     177954.0     11.8      0.4                  elif pre == 0:
+   226      9111     352033.0     38.6      0.7                      s += str(frac)
+   227                                                           else:
+   228      5992     274380.0     45.8      0.6                      s += str(pre) + "'" + str(frac)
+   229
+   230     10000     143769.0     14.4      0.3          problem_list.append(s)
+   231     10000     127341.0     12.7      0.3          cnt -= 1
+   232
+   233         1          8.0      8.0      0.0      return problem_list
+
+```
+
+改进后，占比下降到$2.1\%$，优化幅度还是比较大的。接着看其他模块的分析结果：
+
+### gen_num
+
+`gen_problem`的部分性能分析结果：
+
+```txt
+Total time: 3.25032 s
+File: test.py
+Function: gen_problem at line 25
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    43     11436    4655755.0    407.1     14.3          num = gen_num(mod)
+    44     11436     160130.0     14.0      0.5          problem = [num]
+    45     11436     126071.0     11.0      0.4          last_op = " "
+    46     33943     393360.0     11.6      1.2          for op in op_list:
+    47     22731    9196435.0    404.6     28.3              part_num = gen_num(mod)
+```
+
+由此看出生成随机数`gen_num`是最耗时的，进一步分析`gen_num`模块：
+
+```txt
+Total time: 1.43173 s
+File: test.py
+Function: gen_num at line 4
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+     4                                           @profile
+     5                                           #生成自然数/真分数
+     6                                           def gen_num(mod):
+     7     36820     567019.0     15.4      4.0      if mod <= 0: return Fraction(0, 1)
+     8     35403    3022939.0     85.4     21.1      bit = random.randint(1, 10)
+     9
+    10                                               #自然数
+    11     35403     390743.0     11.0      2.7      if bit >= 1 and bit <= 5:
+    12     17701    3382916.0    191.1     23.6          return Fraction(random.randint(0, mod - 1), 1)
+    13                                               #小于1的真分数
+    14     17702     190909.0     10.8      1.3      elif (bit >= 6 and bit <= 8) or mod == 1:
+    15     10661     856153.0     80.3      6.0          down = random.randint(2, mod + 5)
+    16     10661     878668.0     82.4      6.1          up = random.randint(1, down - 1)
+    17     10661    1248350.0    117.1      8.7          return Fraction(up, down)
+    18                                               #带分数
+    19                                               else:
+    20      7041     598086.0     84.9      4.2          pre = random.randint(1, mod - 1)
+    21      7041     564771.0     80.2      3.9          down = random.randint(2, mod + 5)
+    22      7041     581226.0     82.5      4.1          up = random.randint(1, down - 1)
+    23      7041    2035473.0    289.1     14.2          return pre + Fraction(up, down)
+
+```
+
+除了随机生成整数比较耗时外，还有一个地方：Line #23的分数加法运算耗时。这时可以做一点小优化：
+
+原来的代码：
+```python
+pre = random.randint(1, mod - 1)
+down = random.randint(2, mod + 5)
+up = random.randint(1, down - 1)
+return pre + Fraction(up, down)
+```
+
+修改后的代码：
+```python
+down = random.randint(2, max(5, mod))
+up = random.randint(down, mod * down - 1)
+return Fraction(up, down)
+```
+
+修改后`gen_num`的分析结果：
+
+```txt
+Total time: 1.31546 s
+File: test.py
+Function: gen_num at line 4
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+     4                                           @profile
+     5                                           #生成自然数/真分数
+     6                                           def gen_num(mod):
+     7     37482     523960.0     14.0      4.0      if mod <= 0: return Fraction(0, 1)
+     8     36610    3191023.0     87.2     24.3      bit = random.randint(1, 10)
+     9
+    10                                               #自然数
+    11     36610     401964.0     11.0      3.1      if bit >= 1 and bit <= 5:
+    12     18263    3587839.0    196.5     27.3          return Fraction(random.randint(0, mod - 1), 1)
+    13                                               #小于1的真分数
+    14     18347     197574.0     10.8      1.5      elif (bit >= 6 and bit <= 8) or mod == 1:
+    15     11106     903102.0     81.3      6.9          down = random.randint(2, mod + 5)
+    16     11106     926105.0     83.4      7.0          up = random.randint(1, down - 1)
+    17     11106    1354695.0    122.0     10.3          return Fraction(up, down)
+    18                                               #带分数
+    19                                               else:
+    20      7241     586069.0     80.9      4.5          down = random.randint(2, mod + 5)
+    21      7241     604605.0     83.5      4.6          up = random.randint(down, mod * down - 1)
+    22      7241     877707.0    121.2      6.7          return Fraction(up, down)
+
+```
+
+### 整体对比
+
+优化前：
+
+![](https://images.cnblogs.com/cnblogs_com/happy-MEdge/1676981/o_201007095752cost_time.png)
+
+平均4.1s
+
+优化后：
+
+![](https://images.cnblogs.com/cnblogs_com/happy-MEdge/1676981/o_201007095801cost_time.png)
+
+平均3.7s
 
 ## 项目小结
