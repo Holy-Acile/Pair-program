@@ -87,5 +87,7 @@ def gen_problem(mod):
 
             num = t
             last_op = op
+        
+        if mod <= 5 and num == 0 : ok = False
 
     return problem

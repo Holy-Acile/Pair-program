@@ -34,7 +34,7 @@ def check(problem, answer):
     wrong_txt = 'Wrong: ' + str(len(wrong)) + ' (' + ", ".join(
         str(i) for i in wrong) + ')'
     Grade = open('Grade' + '.txt', "w", encoding='utf-8')
-    Grade.write(correct_txt)
+    Grade.write(correct_txt + '\n')
     Grade.write(wrong_txt)
     str_ans=correct_txt + '\n' + wrong_txt
     # return print(str_ans)

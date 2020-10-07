@@ -72,7 +72,7 @@ def main():
                 load_e = load(e)
                 load_a = load(a)
                 prt_ans=check(load_e, load_a)
-                print(prt_ans)
+                #print(prt_ans)
             end_time = time.time()
             time_required = end_time - start_time
             print('程序所耗时间：%f s' % (time_required))
