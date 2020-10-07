@@ -12,7 +12,7 @@
 ## Github与合作者
 
 合作者（学号）：
-- 王欢：
+- 王欢：3218005443
 - 孔止：3118005414
 
 Github链接：
@@ -68,14 +68,28 @@ Answers.txt         #题目的答案
 ## 设计实现过程
 
 
+Myapp：用于输入输出的对接，按照格式处理生成的题目和答案
 
+gen_problem_list：生成题目集。先调用gen_problem生成题目，然后把生成的题目格式化为字符串（注意有些分数要用带分数表示），且使题目之间不重复
+
+gen_problem：生成一个包含数字和符号的题目
+
+gen_num：生成一个随机分数
+
+check_problem：检查题目是否重复
+
+cal_problem_list：计算题目集的答案。先把题目的字符串转化为数字+符号的题目，然后交给cal_problem处理，计算出结果
+
+cal_problem：计算一个题目的答案
+
+check_txt(附加题)：对比已知题目和答案
 ---
 
 ## 代码说明
 
-关键性代码，生成问题：gen_problem.py
+关键性代码，生成问题：gen_problem.py，计算问题：cal_problem
 
-### 代码
+### 代码一
 
 ```python
 from module.gen_num import gen_num
@@ -194,6 +208,45 @@ def gen_problem(mod):
 8. 根据标记变量，`part_num`和运算符`op`，生成目标表达式，然后再赋值给`problem`
 
 ---
+
+### 代码二
+```python
+import re
+from fractions import Fraction
+
+
+# 计算单个题目
+def cal_problem(input_pro):
+    t1 = "'"  # 先处理假分数
+    if (t1 in input_pro):
+        input_pro = re.sub(r"(\d+'\d+/\d+)", r'(\1)', input_pro)
+        input_pro = input_pro.replace("'", '+')
+    input_pro = re.sub(r'(\d+/\d+)', r'(\1)', input_pro)  # 将再将分数优先处理
+
+    t2 = "÷"
+    if (t2 in input_pro):
+        input_pro = input_pro.replace("÷", '/')
+    t3 = "×"
+    if (t3 in input_pro):
+        input_pro = input_pro.replace("×", '*')
+    transformed_pro = re.sub(r'(\d+)', r'Fraction("\1")', input_pro)  # 小数转分数
+
+    res_int = int(eval(input_pro))
+    res_fra = eval(transformed_pro) - res_int
+    if (res_fra != 0 and res_int != 0):
+        res = str(res_int) + "'" + str(res_fra)  # 返回分数
+    else:
+        res = str(eval(transformed_pro))  # 返回整数字符化
+    return res  # 返回一个字符串形式的参数可能为整数，可能为真分数
+```
+
+### 思路
+由于引入的问题表达式以为字符串传入，故需要对计算符号等进行处理，此处采用了**正则表达式**中符号替换结合**eavl函数**对字符串表达式计算的方法，整体思路如下：
+
+1. 优先级处理：由于分数中的表达式与计算时除号相同，为避免冲突，需要将分数部分进行加括号，故而利用正则表达式替换为表达式中的分数加括号
+2. 符号替换：乘号除号替换为计算符号*和/，真分数包含‘的要替换为加号
+3. 计算结果处理，将计算后的假分数转为标准的输出格式
+
 
 ## 测试说明
 
@@ -548,3 +601,5 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
 ---
 
 ## 项目小结
+王欢个人感想：
+1. 第一次结对编程
