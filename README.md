@@ -5,6 +5,8 @@
 | 作业要求 | [点我](https://edu.cnblogs.com/campus/gdgy/informationsecurity1812/homework/11157) |
 | 作业目标 | 熟悉如何结对开发项目 |
 
+---
+
 ## Github
 
 开发者（学号）：
@@ -36,6 +38,8 @@ Exercises.txt       #生成的题目
 Answers.txt         #题目的答案
 ```
 
+---
+
 ## PSP
 
 | PSP2.1 | Personal Software Process Stages | 预估耗时<br>（分钟） | 实际耗时<br>（分钟） |
@@ -57,9 +61,13 @@ Answers.txt         #题目的答案
  | · Postmortem & Process Improvement Plan | · 事后总结, 并提出过程改进计划 |  |  |
 | | · 合计 |  |  |
 
+---
+
 ## 设计实现过程
 
 
+
+---
 
 ## 代码说明
 
@@ -183,6 +191,8 @@ def gen_problem(mod):
 7. 设置标记变量`bracket_flag`，作用：决定`problem`是否有必要加括号
 8. 根据标记变量，`part_num`和运算符`op`，生成目标表达式，然后再赋值给`problem`
 
+---
+
 ## 测试说明
 
 大部分模块基本都可以用随机生成数据的方法，利用代码检测是否符合约束条件。这里说一下需要自己构造样例来验证正确性的模块：判定两个问题是否重复：check_problem.py
@@ -273,6 +283,7 @@ if __name__ == "__main__":
 8. 第9个样例，在第8个样例基础上，还要判断括号内部交换
 10. 第10个样例，验证乘法是否能正确判断
 
+---
 
 ## 效能分析
 
@@ -531,5 +542,7 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
 ![](https://images.cnblogs.com/cnblogs_com/happy-MEdge/1676981/o_201007095801cost_time.png)
 
 平均3.7s
+
+---
 
 ## 项目小结
