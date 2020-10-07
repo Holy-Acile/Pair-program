@@ -17,7 +17,6 @@ def gen_num(mod):
         return Fraction(up, down)
     #带分数
     else:
-        pre = random.randint(1, mod - 1)
         down = random.randint(2, mod + 5)
-        up = random.randint(1, down - 1)
-        return pre + Fraction(up, down)
+        up = random.randint(down, mod * down - 1)
+        return Fraction(up, down)

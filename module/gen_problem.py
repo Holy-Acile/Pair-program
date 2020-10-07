@@ -39,7 +39,7 @@ def gen_problem(mod):
                     swap_flag = 0
                     t = num - part_num
                     while t < 0:
-                        part_num = gen_num(min(mod, int(t)))
+                        part_num = gen_num(min(mod, int(num)))
                         t = num - part_num
                 else:
                     t = part_num - num

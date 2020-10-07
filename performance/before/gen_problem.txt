@@ -1,0 +1,94 @@
+Total time: 3.25032 s
+File: test.py
+Function: gen_problem at line 25
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    25                                           @profile
+    26                                           #生成题目
+    27                                           def gen_problem(mod):
+    28     11212     155049.0     13.8      0.5      problem = []
+    29     11212     126127.0     11.2      0.4      const_op = ("+", "-", "×", "÷")
+    30
+    31     11212     119988.0     10.7      0.4      ok = False
+    32     22648     277707.0     12.3      0.9      while ok == False :
+    33     11436     120365.0     10.5      0.4          ok = True
+    34
+    35                                                   #生成运算符
+    36     11436    1079284.0     94.4      3.3          cnt_op = random.randint(1, 3)
+    37     11436     132974.0     11.6      0.4          op_list = []
+    38     34268     369076.0     10.8      1.1          while cnt_op:
+    39     22832    2109671.0     92.4      6.5              bit = random.randint(0, 3)
+    40     22832     348944.0     15.3      1.1              op_list.append(const_op[bit])
+    41     22832     286352.0     12.5      0.9              cnt_op -= 1
+    42
+    43     11436    4655755.0    407.1     14.3          num = gen_num(mod)
+    44     11436     160130.0     14.0      0.5          problem = [num]
+    45     11436     126071.0     11.0      0.4          last_op = " "
+    46     33943     393360.0     11.6      1.2          for op in op_list:
+    47     22731    9196435.0    404.6     28.3              part_num = gen_num(mod)
+    48
+    49                                                       #交换标记，决定problem(值为num)和part_num的位置
+    50     22731    2165613.0     95.3      6.7              swap_flag = random.randint(0, 1)
+    51
+    52     22731     265241.0     11.7      0.8              t = 0  #num和part_num的运算结果
+    53                                                       #加
+    54     22731     266048.0     11.7      0.8              if op == "+":
+    55      5641    1061817.0    188.2      3.3                  t = num + part_num
+    56                                                       #减
+    57     17090     206342.0     12.1      0.6              elif op == "-":
+    58                                                           #对problem和part_num的位置进行分类
+    59      5745     250550.0     43.6      0.8                  if swap_flag == 0 or num >= mod:
+    60      3156      34229.0     10.8      0.1                      swap_flag = 0
+    61      3156     598319.0    189.6      1.8                      t = num - part_num
+    62      4504     332297.0     73.8      1.0                      while t < 0:
+    63      1348     221755.0    164.5      0.7                          part_num = gen_num(min(mod, int(t)))
+    64      1348     255110.0    189.3      0.8                          t = num - part_num
+    65                                                           else:
+    66      2589     489621.0    189.1      1.5                      t = part_num - num
+    67      3853     264780.0     68.7      0.8                      while t < 0:
+    68      1264     950279.0    751.8      2.9                          part_num = gen_num(int(mod - num)) + num
+    69      1264     238053.0    188.3      0.7                          t = part_num - num
+    70      2589      56797.0     21.9      0.2                      if part_num.denominator > mod + 5 :
+    71       224       2429.0     10.8      0.0                          ok = False
+    72       224       2496.0     11.1      0.0                          break
+    73                                                       #乘
+    74     11345     137419.0     12.1      0.4              elif op == "×":
+    75      5563    1011811.0    181.9      3.1                  t = num * part_num
+    76                                                       #除
+    77                                                       else:
+    78                                                           #对problem和part_num的位置进行分类
+    79      5782      70513.0     12.2      0.2                  if swap_flag == 0:
+    80      3011     105599.0     35.1      0.3                      while part_num == 0:
+    81       137      55626.0    406.0      0.2                          part_num = gen_num(mod)
+    82      2874     533027.0    185.5      1.6                      t = num / part_num
+    83                                                           else:
+    84      2908     101387.0     34.9      0.3                      if num == 0:
+    85       187       2125.0     11.4      0.0                          swap_flag = 0
+    86       199       6870.0     34.5      0.0                          while part_num == 0:
+    87        12       4843.0    403.6      0.0                              part_num = gen_num(mod)
+    88       187      35262.0    188.6      0.1                          t = num / part_num
+    89                                                               else:
+    90      2721     499201.0    183.5      1.5                          t = part_num / num
+    91
+    92                                                       #加括号
+    93     22507     277643.0     12.3      0.9              bracket_flag = False
+    94     22507     313521.0     13.9      1.0              if op == "×" or op == "÷":
+    95     11345     157591.0     13.9      0.5                  if last_op == "+" or last_op == "-":
+    96      2859      30895.0     10.8      0.1                      bracket_flag = True
+    97
+    98     22507     255863.0     11.4      0.8              if bracket_flag:
+    99      2859      49456.0     17.3      0.2                  problem = ["("] + problem + [")"]
+   100
+   101                                                       #交换位置
+   102     22507     286051.0     12.7      0.9              if swap_flag == 1:
+   103     10673     151948.0     14.2      0.5                  if bracket_flag == False and last_op != " ":
+   104      3684      63727.0     17.3      0.2                      problem = ["("] + problem + [")"]
+   105     10673     186719.0     17.5      0.6                  problem = [part_num] + [op] + problem
+   106                                                       else:
+   107     11834     206384.0     17.4      0.6                  problem = problem + [op] + [part_num]
+   108
+   109     22507     276521.0     12.3      0.9              num = t
+   110     22507     249892.0     11.1      0.8              last_op = op
+   111
+   112     11212     114282.0     10.2      0.4      return problem

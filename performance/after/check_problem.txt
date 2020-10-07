@@ -1,0 +1,88 @@
+Total time: 1.04654 s
+File: test.py
+Function: check_problem at line 115
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   115                                           @profile
+   116                                           #检查题目是否重复
+   117                                           def check_problem(problem, vis):
+   118     11384    1251912.0    110.0     12.0      if str(problem) in vis: return False
+   119     10355     146955.0     14.2      1.4      const_op = ("+", "-", "×", "÷")
+   120
+   121     10355     112081.0     10.8      1.1      op = []
+   122     10355     108184.0     10.4      1.0      cnt_op = 0
+   123     77504     848402.0     10.9      8.1      for it in problem:
+   124     67149     997368.0     14.9      9.5          if type(it) != type(const_frac) :
+   125     35117     449818.0     12.8      4.3              if it != "(" and it != ")" :
+   126     21677     253263.0     11.7      2.4                  cnt_op += 1
+   127     21677     295654.0     13.6      2.8                  op.append(it)
+   128
+   129                                               #1个运算符
+   130     10355     118810.0     11.5      1.1      if cnt_op == 1:
+   131      2820      41217.0     14.6      0.4          if op[0] == "-" or op[0] == "÷":
+   132      1246      84058.0     67.5      0.8              vis[str(problem)] = True
+   133      1246      13973.0     11.2      0.1              return True
+   134      1574      16675.0     10.6      0.2          tmp = problem
+   135      1574      25236.0     16.0      0.2          tmp[0], tmp[2] = tmp[2], tmp[0]
+   136
+   137      1574     110037.0     69.9      1.1          if str(tmp) in vis:
+   138       332       3724.0     11.2      0.0              return False
+   139                                                   else:
+   140      1242      79605.0     64.1      0.8              vis[str(tmp)] = True
+   141      1242      81553.0     65.7      0.8              vis[str(problem)] = True
+   142      1242      13954.0     11.2      0.1              return True
+   143                                               #2个运算符
+   144      7535      96000.0     12.7      0.9      elif cnt_op == 2:
+   145      3748      57721.0     15.4      0.6          if op[0] == "-" or op[0] == "÷":
+   146      1765      26325.0     14.9      0.3              if op[1] == "-" or op[1] == "÷":
+   147       956      91537.0     95.8      0.9                  vis[str(problem)] = True
+   148       956      11049.0     11.6      0.1                  return True
+   149
+   150      2792      30009.0     10.7      0.3          pos = -1
+   151     20094     262533.0     13.1      2.5          for i in range(len(problem)):
+   152     17302     750173.0     43.4      7.2              if problem[i] == "(": pos = i
+   153
+   154                                                   #交换
+   155      2792      46067.0     16.5      0.4          if problem[pos + 2] == "+" or problem[pos + 2] == "×":
+   156      1899     160885.0     84.7      1.5              if problem[pos + 1] > problem[pos + 3]:
+   157      1790      26385.0     14.7      0.3                  problem[pos + 1], problem[pos + 3] = problem[pos + 3], \ 
+   158       895      11367.0     12.7      0.1                                                       problem[pos + 1]    
+   159
+   160     13960     171837.0     12.3      1.6          tmp = ["("] + \
+   161      2792      41013.0     14.7      0.4                [problem[pos + 1]] + \
+   162      2792      36196.0     13.0      0.3                [problem[pos + 2]] + \
+   163      5584      69381.0     12.4      0.7                [problem[pos + 3]] + [")"]
+   164
+   165                                                   #得到另一个运算符和运算数
+   166      2792      30918.0     11.1      0.3          sc_op = ""
+   167      2792      30968.0     11.1      0.3          sc_num = 0
+   168
+   169      5386     100272.0     18.6      1.0          for i in range(0, max(0, pos)):
+   170      2594      34390.0     13.3      0.3              if sc_op != "" and sc_num != 0: break
+   171      2594     338598.0    130.5      3.2              if problem[i] in const_op: sc_op = problem[i]
+   172      1297      19070.0     14.7      0.2              else: sc_num = problem[i]
+   173
+   174     20094     257020.0     12.8      2.5          for i in range(len(problem)):
+   175     17302     729453.0     42.2      7.0              if problem[i] == ")": pos = i
+   176
+   177      2792      37941.0     13.6      0.4          if pos == -1: pos = 2
+   178
+   179      5782      91938.0     15.9      0.9          for i in range(pos + 1, len(problem)):
+   180      2990      44515.0     14.9      0.4              if sc_op != "" and sc_num != 0: break
+   181      2990     388302.0    129.9      3.7              if problem[i] in const_op: sc_op = problem[i]
+   182      1495      21654.0     14.5      0.2              else: sc_num = problem[i]
+   183
+   184                                                   #合并到tmp
+   185      2792      50655.0     18.1      0.5          tmp = tmp + [sc_op] + [sc_num]
+   186
+   187      2792     297862.0    106.7      2.8          if str(tmp) in vis:
+   188        23        281.0     12.2      0.0              return False
+   189                                                   else:
+   190      2769     257046.0     92.8      2.5              vis[str(tmp)] = True
+   191      2769     256306.0     92.6      2.4              vis[str(problem)] = True
+   192      2769      31301.0     11.3      0.3              return True
+   193                                               #3个运算符
+   194                                               else:
+   195      3787     462300.0    122.1      4.4          vis[str(problem)] = True
+   196      3787      43681.0     11.5      0.4          return True

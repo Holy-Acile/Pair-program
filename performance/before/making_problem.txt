@@ -1,0 +1,37 @@
+Total time: 10.3257 s
+File: Myapp.py
+Function: making_problem at line 23
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    23                                           @profile
+    24                                           def making_problem(n, r):
+    25         1         35.0     35.0      0.0      try:
+    26         1         66.0     66.0      0.0          int(n)
+    27         1         17.0     17.0      0.0          int(r)
+    28                                               except ValueError:
+    29                                                   print("Error:num处输入的不是整数！")
+    30                                               else:
+    31         1      11014.0  11014.0      0.0          Exer = open('Exercises' + '.txt', "w", encoding='utf-8')  ##创建 
+两个txt文件
+    32         1       5698.0   5698.0      0.0          Answ = open('Answers' + '.txt', "w", encoding='utf-8')
+    33         1         62.0     62.0      0.0          n = int(n)
+    34         1         18.0     18.0      0.0          r = int(r)
+    35         1   58228549.0 58228549.0     56.4          problem = gen_problem_list(n, r)
+    36         1         49.0     49.0      0.0          if n <= 100 :
+    37                                                       print(problem)
+    38         1   43752998.0 43752998.0     42.4          answer = cal_problem_list(problem)
+    39
+    40     10001      99036.0      9.9      0.1          for i in range(len(problem)):
+    41     10000     140247.0     14.0      0.1              p = str(problem[i])
+    42     10000     210919.0     21.1      0.2              p = str(i + 1) + '. ' + p + ' = ' + '\n'
+    43     10000     235853.0     23.6      0.2              Exer.write(p)
+    44         1       3185.0   3185.0      0.0          Exer.close()
+    45
+    46     10001      89246.0      8.9      0.1          for j in range(len(answer)):
+    47     10000     124284.0     12.4      0.1              s = str(answer[j])
+    48     10000     169014.0     16.9      0.2              s = str(j + 1) + '. ' + s + '\n'
+    49     10000     184081.0     18.4      0.2              Answ.write(s)
+    50         1       3063.0   3063.0      0.0          Answ.close()
+    51         1         28.0     28.0      0.0          if n <= 100 :
+    52                                                       print(answer)

@@ -1,0 +1,40 @@
+Total time: 4.79658 s
+File: test.py
+Function: gen_problem_list at line 200
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   200                                           @profile
+   201                                           #生成题目集
+   202                                           def gen_problem_list(cnt, mod):
+   203         1         30.0     30.0      0.0      problem_list = []
+   204         1         16.0     16.0      0.0      vis = {}  #记录已经存在的problem
+   205         1         12.0     12.0      0.0      const_op = ("+", "-", "×", "÷")
+   206
+   207     10001     101018.0     10.1      0.2      while cnt:
+   208     10000     128066.0     12.8      0.3          problem = []
+   209                                                   while True:
+   210     11404   27219434.0   2386.8     56.7              problem = gen_problem(int(mod))
+   211     11404    7822336.0    685.9     16.3              if check_problem(problem, vis): break
+   212
+   213     10000    1030576.0    103.1      2.1          vis[str(problem)] = True
+   214
+   215     10000     114895.0     11.5      0.2          s = ""
+   216     75344     802463.0     10.7      1.7          for it in problem:
+   217     65344    1002839.0     15.3      2.1              if type(it) != type(const_frac):  #符号
+   218     34244     481529.0     14.1      1.0                  if it == "(" or it == ")": s += it
+   219     21100     345427.0     16.4      0.7                  else: s += " " + it + " "
+   220                                                       else:  #数字
+   221     31100     894772.0     28.8      1.9                  pre = int(it)
+   222     31100    5591981.0    179.8     11.7                  frac = it - pre
+   223     31100    1061854.0     34.1      2.2                  if frac == 0:
+   224     15997     293074.0     18.3      0.6                      s += str(pre)
+   225     15103     177954.0     11.8      0.4                  elif pre == 0:
+   226      9111     352033.0     38.6      0.7                      s += str(frac)
+   227                                                           else:
+   228      5992     274380.0     45.8      0.6                      s += str(pre) + "'" + str(frac)
+   229
+   230     10000     143769.0     14.4      0.3          problem_list.append(s)
+   231     10000     127341.0     12.7      0.3          cnt -= 1
+   232
+   233         1          8.0      8.0      0.0      return problem_list

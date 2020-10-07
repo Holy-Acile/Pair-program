@@ -1,3 +1,8 @@
+from fractions import Fraction
+
+
+const_frac = Fraction(0, 1)
+
 #检查题目是否重复
 def check_problem(problem, vis):
     if str(problem) in vis: return False
