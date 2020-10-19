@@ -20,7 +20,7 @@ def gen_num(mod):
         down = random.randint(2, max(5, mod))
         up = random.randint(1, down - 1)
         return Fraction(up, down)
-    #带分数
+    #自然数/真分数(真分数比例大)
     else:
         down = random.randint(2, max(5, mod))
         up = random.randint(down, mod * down - 1)

@@ -1,4 +1,3 @@
-# 结对项目
 
 | 软件工程 | [点我](https://edu.cnblogs.com/campus/gdgy/informationsecurity1812/) |
 | :-----------------: | :---------------: |
@@ -548,7 +547,7 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
 
 除了随机生成整数比较耗时外，还有一个地方：Line #23的分数加法运算耗时。这时可以做一点小优化：
 
-原来的代码：
+原来的代码（只有真分数）：
 ```python
 pre = random.randint(1, mod - 1)
 down = random.randint(2, mod + 5)
@@ -556,7 +555,7 @@ up = random.randint(1, down - 1)
 return pre + Fraction(up, down)
 ```
 
-修改后的代码：
+修改后的代码（自然数与真分数混合，真分数比例大）：
 ```python
 down = random.randint(2, max(5, mod))
 up = random.randint(down, mod * down - 1)
@@ -586,7 +585,7 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
     15     11106     903102.0     81.3      6.9          down = random.randint(2, mod + 5)
     16     11106     926105.0     83.4      7.0          up = random.randint(1, down - 1)
     17     11106    1354695.0    122.0     10.3          return Fraction(up, down)
-    18                                               #带分数
+    18                                               #自然数/真分数(真分数比例大)
     19                                               else:
     20      7241     586069.0     80.9      4.5          down = random.randint(2, mod + 5)
     21      7241     604605.0     83.5      4.6          up = random.randint(down, mod * down - 1)
